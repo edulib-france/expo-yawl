@@ -1,0 +1,10 @@
+{
+  "extends": "expo/tsconfig.base",
+  "compilerOptions": {
+    "strict": true,
+    "paths": {
+      "@edulib-france/expo-yawl": ["../src/index"],
+      "@edulib-france/expo-yawl/*": ["../src/*"]
+    }
+  }
+}
