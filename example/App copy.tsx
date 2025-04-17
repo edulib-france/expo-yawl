@@ -1,24 +1,30 @@
 import Yawl, { YawlView } from "@edulib-france/expo-yawl";
-import { useState } from "react";
+import { useEvent } from "expo";
 import { Button, SafeAreaView, ScrollView, Text, View } from "react-native";
 
 export default function App() {
-  const [test, setTest] = useState<string>("");
+  const onChangePayload = useEvent(Yawl, "onChange");
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.container}>
         <Text style={styles.header}>Module API Example</Text>
+        <Group name="Constants">
+          <Text>{Yawl.PI}</Text>
+        </Group>
         <Group name="Functions">
-          <Text>{test}</Text>
+          <Text>{Yawl.hello()}</Text>
         </Group>
         <Group name="Async functions">
           <Button
             title="Set value"
             onPress={async () => {
-              const aa = await Yawl.hello();
-              setTest(aa);
+              await Yawl.setValueAsync("Hello from JS!");
             }}
           />
+        </Group>
+        <Group name="Events">
+          <Text>{onChangePayload?.value}</Text>
         </Group>
         <Group name="Views">
           <YawlView
