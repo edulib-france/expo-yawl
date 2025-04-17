@@ -1,4 +1,4 @@
-import Yawl, { YawlView } from "@edulib-france/expo-yawl";
+import Yawl from "@edulib-france/expo-yawl";
 import { useState } from "react";
 import { Button, SafeAreaView, ScrollView, Text, View } from "react-native";
 
@@ -18,13 +18,6 @@ export default function App() {
               const aa = await Yawl.hello();
               setTest(aa);
             }}
-          />
-        </Group>
-        <Group name="Views">
-          <YawlView
-            url="https://www.example.com"
-            onLoad={({ nativeEvent: { url } }) => console.log(`Loaded: ${url}`)}
-            style={styles.view}
           />
         </Group>
       </ScrollView>
