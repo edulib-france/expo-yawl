@@ -1,7 +1,7 @@
 import NetInfo from "@react-native-community/netinfo";
 import queueFactory from "react-native-queue";
 
-import { API_URL, Env, YawlApi, yawlApi } from "./api";
+import { Env, YawlApi, yawlApi } from "./api";
 import { generateUUID } from "./generateUUID";
 
 /*
@@ -43,24 +43,18 @@ const WORKERS_OPTIONS = {
   attempts: 1000,
   concurrency: 1,
 };
-
-// const onTrackingEvents = ["started", "succeeded", "failure", "failed", "error"];
-export default class Ahoy {
+export default class Yawl {
   private visitId: string;
   private visitorId: string;
   private offlineMode: boolean = false;
   private hasInternetAccess: boolean | null = true;
   private queue: any;
-  private apiKey: string;
-  private url: string;
   private api: YawlApi;
 
   constructor({ apiKey, env = "prod" }: { apiKey: string; env?: Env }) {
-    this.apiKey = apiKey;
-    this.url = API_URL[env];
+    this.api = yawlApi({ apiKey, env });
     this.visitId = generateUUID();
     this.visitorId = generateUUID();
-    this.api = yawlApi({ apiKey, env });
   }
 
   init = async () => {
@@ -88,6 +82,22 @@ export default class Ahoy {
         },
       });
     }
+  };
+
+  track = (name: string, properties: object = {}) => {
+    const event = {
+      id: generateUUID(),
+      visit_id: this.visitId,
+      _visitor_id: this.visitorId,
+      timestamp: new Date().getTime() / 1000.0,
+      name,
+      properties: this.prepareProperties(properties),
+    };
+    // Send event to all services before ahoy queue
+    // await this.onTrackingInvoke("started", event);
+    // Create ahoy job and add to queue
+    this.createJob(JOB_TRACKING, event);
+    return event;
   };
 
   private initConnection = async () => {
@@ -122,22 +132,6 @@ export default class Ahoy {
   };
 
   private trackVisit = (event) => this.api.sendVisit(event);
-
-  track = (name: string, properties: object = {}) => {
-    const event = {
-      id: generateUUID(),
-      visit_id: this.visitId,
-      _visitor_id: this.visitorId,
-      timestamp: new Date().getTime() / 1000.0,
-      name,
-      properties: this.prepareProperties(properties),
-    };
-    // Send event to all services before ahoy queue
-    // await this.onTrackingInvoke("started", event);
-    // Create ahoy job and add to queue
-    this.createJob(JOB_TRACKING, event);
-    return event;
-  };
 
   private createJob = (name: JOB_TYPES, event: object) => {
     if (this.offlineMode) {
