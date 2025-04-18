@@ -1,14 +1,19 @@
 import Yawl from "@edulib-france/expo-yawl";
+import { useEffect, useState } from "react";
 import { Button, SafeAreaView, ScrollView, Text, View } from "react-native";
 
 export const yawl = new Yawl({
   apiKey: "cda712a73aff22114b6f62871697ea15",
   env: "staging",
 });
-yawl.init().finally(() => {});
 
 export default function App() {
-  // const [test, setTest] = useState<string>("");
+  const [isYawlReady, setIsYawlReady] = useState<boolean>(false);
+  useEffect(() => {
+    yawl.init().then(() => {
+      setIsYawlReady(true);
+    });
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -19,6 +24,7 @@ export default function App() {
         {/* </Group> */}
         <Group name="Async functions">
           <Button
+            disabled={!isYawlReady}
             title="Set value"
             onPress={async () => {
               yawl.track("rn-test");
