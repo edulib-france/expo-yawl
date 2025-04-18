@@ -2,6 +2,7 @@ import NetInfo from "@react-native-community/netinfo";
 import queueFactory from "react-native-queue";
 
 import { Env, YawlApi, yawlApi } from "./api";
+import { getDeviceInfo } from "./deviceInfo";
 import { generateUUID } from "./generateUUID";
 
 /*
@@ -60,27 +61,16 @@ export default class Yawl {
   init = async () => {
     await this.initConnection();
     await this.initQueue();
-
-    const data = {
-      visit: {
-        id: this.visitId,
-        visitor_id: this.visitorId,
-      },
-    };
-
+    const data = await this.getVisitData();
+    console.log("🚀 ===> ~ index.ts:65 ~ Yawl ~ init= ~ data:", data);
     this.createJob(JOB_VISITOR, data);
   };
 
-  setVisitId = (visitId: string): void => {
+  setVisitId = async (visitId: string): Promise<void> => {
     this.visitId = visitId;
 
     if (this.hasInternetAccess) {
-      this.trackVisit({
-        visit: {
-          id: this.visitId,
-          visitor_id: this.visitorId,
-        },
-      });
+      this.trackVisit(await this.getVisitData());
     }
   };
 
@@ -99,6 +89,16 @@ export default class Yawl {
     this.createJob(JOB_TRACKING, event);
     return event;
   };
+
+  private async getVisitData(): Promise<object> {
+    return {
+      visit: {
+        visit_token: this.visitId,
+        visitor_token: this.visitorId,
+        ...(await getDeviceInfo()),
+      },
+    };
+  }
 
   private initConnection = async () => {
     const state = await NetInfo.fetch();
