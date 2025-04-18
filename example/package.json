@@ -4,15 +4,19 @@
   "main": "index.ts",
   "scripts": {
     "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
     "web": "expo start --web"
   },
   "dependencies": {
     "expo": "~52.0.46",
     "expo-status-bar": "~2.0.1",
     "react": "18.3.1",
-    "react-native": "0.76.9"
+    "react-native": "0.76.9",
+    "wretch": "^2.11.0",
+    "@react-native-community/netinfo": "11.4.1",
+    "@react-native-async-storage/async-storage": "1.23.1",
+    "react-native-queue": "https://github.com/Bravado-network/react-native-queue-asyncstorage.git#async-storage-galatea-384"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

@@ -1,6 +1,8 @@
+import Yawl from "@edulib-france/expo-yawl";
 import { Button, SafeAreaView, ScrollView, Text, View } from "react-native";
 
-import { yawl } from ".";
+export const yawl = new Yawl({ apiKey: "key", env: "staging" });
+yawl.init().finally(() => {});
 
 export default function App() {
   // const [test, setTest] = useState<string>("");

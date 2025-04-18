@@ -30,6 +30,7 @@ INPUT PARAMETERS:
     visit: string - url for visit where request should be sent to
   }
 
+
   offlineMode: boolean - ONLY FOR TESTING PURPOSES, indicates if you want to test with no internet
 }
 */
@@ -55,7 +56,7 @@ export default class Ahoy {
   private visitId: string;
   private visitorId: string;
   private offlineMode: boolean = false;
-  private hasInternetAccess: boolean = true;
+  private hasInternetAccess: boolean | null = true;
   private queue: any;
   private apiKey: string;
   private url: string;
@@ -228,19 +229,13 @@ export default class Ahoy {
           // await this.onTrackingInvoke("succeeded", event);
         },
         onFailure: async (id, event, error) => {
-          console.log(
-            "🚀 ===> ~ ahoy.ts:192 ~ Ahoy ~ onFailure: ~ event:",
-            event,
-            error
-          );
+          console.log("===>onFailure");
+          console.log(JSON.stringify(error, Object.getOwnPropertyNames(error)));
           // await this.onTrackingInvoke("failure", event, error);
         },
         onFailed: async (id, event, error) => {
-          console.log(
-            "🚀 ===> ~ ahoy.ts:200 ~ Ahoy ~ onFailed: ~ event:",
-            event,
-            error
-          );
+          console.log("===>onFailed");
+          console.log(JSON.stringify(error, Object.getOwnPropertyNames(error)));
           // await this.onTrackingInvoke("failed", event, error);
         },
         ...WORKERS_OPTIONS,
