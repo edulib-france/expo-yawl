@@ -1,8 +1,8 @@
 import NetInfo from "@react-native-community/netinfo";
 import queueFactory from "react-native-queue";
 
-import { trackPost } from "../api/index";
-import generateUUID from "../utils/generateUUID";
+import { trackPost } from "../api";
+import { generateUUID } from "../utils";
 
 /*
 
@@ -32,11 +32,17 @@ INPUT PARAMETERS:
 
   offlineMode: boolean - ONLY FOR TESTING PURPOSES, indicates if you want to test with no internet
 }
-
 */
+
+type Env = "prod" | "staging";
+const API_URL: { [key in Env]: string } = {
+  prod: "https://www.edulib.fr",
+  staging: "https://staging.edulib.fr",
+} as const;
 
 const JOB_VISITOR = "visitor";
 const JOB_TRACKING = "tracking";
+type JOB_TYPES = typeof JOB_TRACKING | typeof JOB_VISITOR;
 const WORKERS_OPTIONS = {
   timeout: 20000,
   attempts: 1000,
@@ -46,42 +52,29 @@ const WORKERS_OPTIONS = {
 // const onTrackingEvents = ["started", "succeeded", "failure", "failed", "error"];
 // const trackEvents = ["event", "visit"];
 export default class Ahoy {
-  visitId: any;
-  visitorId: any;
-  userId: any;
-  visitParams: any;
-  // onTracking: any;
-  // trackPosts: any;
-  trackUrls: any;
-  offlineMode: any;
-  applicationBundleId: any;
-  hasInternetAccess: any;
-  queue: any;
+  private visitId: string;
+  private visitorId: string;
+  private offlineMode: boolean = false;
+  private hasInternetAccess: boolean = true;
+  private queue: any;
   private apiKey: string;
-  private env: string;
+  private url: string;
 
-  constructor({
-    apiKey,
-    env = "prod",
-  }: {
-    apiKey: string;
-    env?: "prod" | "staging";
-  }) {
+  constructor({ apiKey, env = "prod" }: { apiKey: string; env?: Env }) {
     this.apiKey = apiKey;
-    this.env = env;
+    this.url = API_URL[env];
+    this.visitId = generateUUID();
+    this.visitorId = generateUUID();
   }
 
   init = async () => {
     await this.initConnection();
     await this.initQueue();
-    this.visitId = generateUUID();
 
     const data = {
       visit: {
         id: this.visitId,
         visitor_id: this.visitorId,
-        user_id: this.userId,
-        ...this.visitParams,
       },
     };
 
@@ -96,8 +89,6 @@ export default class Ahoy {
         visit: {
           id: this.visitId,
           visitor_id: this.visitorId,
-          user_id: this.userId,
-          ...this.visitParams,
         },
       });
     }
@@ -106,7 +97,9 @@ export default class Ahoy {
   private initConnection = async () => {
     const state = await NetInfo.fetch();
     this.hasInternetAccess = state.isConnected;
-    NetInfo.addEventListener(this.handleNetInfoConnectionChange);
+    NetInfo.addEventListener(
+      (state) => (this.hasInternetAccess = state.isConnected)
+    );
   };
 
   private initQueue = async () => {
@@ -125,29 +118,20 @@ export default class Ahoy {
     const trackEvent = {
       event: {
         ...event,
-        applicationBundleId: this.applicationBundleId,
+        // applicationBundleId: this.applicationBundleId,
       },
     };
 
-    return this.trackInvoke("event", trackEvent);
+    return this.trackInvoke("events", trackEvent);
   };
 
-  private trackVisit = (event) => this.trackInvoke("visit", event);
+  private trackVisit = (event) => this.trackInvoke("visits", event);
 
-  /**
-   * PUBLIC API
-   * Send event to jobs queue
-   * @param name
-   * @param properties
-   * @returns {Promise<{name: *, id: *, visit_id: *, properties: *, timestamp: number}>}
-   */
-  track = async (name, properties = {}) => {
+  track = (name: string, properties: object = {}) => {
     const event = {
       id: generateUUID(),
       visit_id: this.visitId,
-      user_id: this.userId,
       _visitor_id: this.visitorId,
-      _user_id: this.userId,
       timestamp: new Date().getTime() / 1000.0,
       name,
       properties: this.prepareProperties(properties),
@@ -159,9 +143,9 @@ export default class Ahoy {
     return event;
   };
 
-  private createJob = (name, event) => {
+  private createJob = (name: JOB_TYPES, event: object) => {
     if (this.offlineMode) {
-      this.hasInternetAccess = undefined;
+      this.hasInternetAccess = false;
     }
 
     if (this.queue) {
@@ -169,20 +153,9 @@ export default class Ahoy {
     }
   };
 
-  private handleNetInfoConnectionChange = (state) => {
-    this.hasInternetAccess = state.isConnected;
-  };
-
-  // =====================
-  // + HELP METHODS
-  // =====================
-  /**
-   * Prepare properties object for ahoy
-   * @param inter
-   */
-  private prepareProperties = (inter) => {
+  private prepareProperties = (inter: object) => {
     const properties = {
-      applicationBundleId: this.applicationBundleId,
+      // applicationBundleId: this.applicationBundleId,
     };
     Object.keys(inter).map((name, key) => {
       const k = name.replace(/[^a-z0-9_]/gi, "");
@@ -192,51 +165,10 @@ export default class Ahoy {
     return properties;
   };
 
-  // onTrackingInvoke = async (call, params, error) => {
-  //   // if (!this.onTracking) {
-  //   //   throw new Error("Please, specify onTracking");
-  //   // }
-
-  //   // if (!onTrackingEvents.includes(call)) {
-  //   //   throw new Error(`onTracking[${call}] is not a function`);
-  //   // }
-
-  //   // if (!isFunction(this.onTracking[call])) {
-  //   //   throw new Error(`onTracking[${call}] is not a function`);
-  //   // }
-
-  //   return this.onTracking[call](params, error);
-  // };
-
-  private trackInvoke = async (call, params) => {
-    // if (!(this.trackUrls || this.trackPosts)) {
-    //   throw new Error("Please, specify trackUrls or trackPosts");
-    // }
-
-    // if (!trackEvents.includes(call)) {
-    //   throw new Error(
-    //     `Please, make sure that '${call}' is in [${trackEvents}]`
-    //   );
-    // }
-
-    // if (!this.trackPosts) {
-    return trackPost(this.trackUrls[call], params);
-    // }
-
-    // if (!isFunction(this.trackPosts[call])) {
-    //   throw new Error(`trackPosts[${call}] is not a function`);
-    // }
-
-    // return this.trackPosts[call](params);
+  private trackInvoke = async (call: "visits" | "events", params: unknown) => {
+    const _url = `${this.url}/ahoy/${call}`;
+    return trackPost(_url, params);
   };
-
-  // =====================
-  // - HELP METHODS
-  // =====================
-
-  // =====================
-  // + WORKERS
-  // =====================
 
   private addTrackingWorker = () => {
     this.queue.addWorker(
@@ -287,8 +219,4 @@ export default class Ahoy {
       }
     );
   };
-
-  // =====================
-  // - WORKERS
-  // =====================
 }
