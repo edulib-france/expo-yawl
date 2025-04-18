@@ -177,35 +177,26 @@ export default class Ahoy {
       JOB_TRACKING,
       async (id, event) => {
         if (this.hasInternetAccess) {
-          return this.trackEvent(event);
+          const res = await this.trackEvent(event);
+          // TODO: parse response
+          console.log("🚀 ===> ~ res:", res);
+          return { ok: true };
         }
-
         throw new Error("Network request failed");
       },
       {
-        // onSuccess: async (id, event) => {
-        //   console.log(
-        //     "🚀 ===> ~ ahoy.ts:185 ~ Ahoy ~ onSuccess: ~ event:",
-        //     event
-        //   );
-        //   // await this.onTrackingInvoke("succeeded", event);
-        // },
-        // onFailure: async (id, event, error) => {
-        //   console.log(
-        //     "🚀 ===> ~ ahoy.ts:192 ~ Ahoy ~ onFailure: ~ event:",
-        //     event,
-        //     error
-        //   );
-        //   // await this.onTrackingInvoke("failure", event, error);
-        // },
-        // onFailed: async (id, event, error) => {
-        //   console.log(
-        //     "🚀 ===> ~ ahoy.ts:200 ~ Ahoy ~ onFailed: ~ event:",
-        //     event,
-        //     error
-        //   );
-        //   // await this.onTrackingInvoke("failed", event, error);
-        // },
+        onSuccess: async (id, event) => {
+          console.log("🚀 ===> JOB_TRACKING ~ onSuccess: ~ event:", id);
+          // await this.onTrackingInvoke("succeeded", event);
+        },
+        onFailure: async (id, event, error) => {
+          console.log("🚀 ===> JOB_TRACKING ~ onFailure: ~ error:", id, error);
+          // await this.onTrackingInvoke("failure", event, error);
+        },
+        onFailed: async (id, event, error) => {
+          console.log("🚀 ===> JOB_TRACKING ~ onFailed: ~ error:", id, error);
+          // await this.onTrackingInvoke("failed", event, error);
+        },
         ...WORKERS_OPTIONS,
       }
     );
@@ -216,8 +207,9 @@ export default class Ahoy {
       JOB_VISITOR,
       async (id, event) => {
         if (this.hasInternetAccess) {
-          const newLocal = await this.trackVisit(event);
-          console.log("🚀 ===> ~ ahoy.ts:220 ~ Ahoy ~ newLocal:", id, newLocal);
+          const res = await this.trackVisit(event);
+          // TODO: parse response
+          console.log("🚀 ===> ~ res:", res);
           return { ok: true };
         }
 
@@ -225,20 +217,15 @@ export default class Ahoy {
       },
       {
         onSuccess: async (id, event) => {
-          console.log(
-            "🚀 ===> ~ ahoy.ts:185 ~ Ahoy ~ onSuccess: ~ event:",
-            event
-          );
+          console.log("🚀 ===> JOB_VISITOR ~ onSuccess: ~ event:", id, event);
           // await this.onTrackingInvoke("succeeded", event);
         },
         onFailure: async (id, event, error) => {
-          console.log("===>onFailure", id);
-          console.log(JSON.stringify(error, Object.getOwnPropertyNames(error)));
+          console.log("🚀 ===> JOB_VISITOR ~ onFailure: ~ error:", id, error);
           // await this.onTrackingInvoke("failure", event, error);
         },
         onFailed: async (id, event, error) => {
-          console.log("===>onFailed", id);
-          console.log(JSON.stringify(error, Object.getOwnPropertyNames(error)));
+          console.log("🚀 ===> JOB_VISITOR ~ onFailed: ~ error:", id, error);
           // await this.onTrackingInvoke("failed", event, error);
         },
         ...WORKERS_OPTIONS,
