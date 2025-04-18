@@ -1,22 +1,23 @@
-import Yawl from "@edulib-france/expo-yawl";
-import { useState } from "react";
 import { Button, SafeAreaView, ScrollView, Text, View } from "react-native";
 
+import { yawl } from ".";
+
 export default function App() {
-  const [test, setTest] = useState<string>("");
+  // const [test, setTest] = useState<string>("");
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.container}>
         <Text style={styles.header}>Module API Example</Text>
-        <Group name="Functions">
-          <Text>{test}</Text>
-        </Group>
+        {/* <Group name="Functions"> */}
+        {/* <Text>{test}</Text> */}
+        {/* </Group> */}
         <Group name="Async functions">
           <Button
             title="Set value"
             onPress={async () => {
-              const aa = await Yawl.hello();
-              setTest(aa);
+              yawl.track("rn-test");
+              // setTest(aa);
             }}
           />
         </Group>

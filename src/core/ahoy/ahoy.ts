@@ -182,12 +182,26 @@ export default class Ahoy {
       },
       {
         onSuccess: async (id, event) => {
+          console.log(
+            "🚀 ===> ~ ahoy.ts:185 ~ Ahoy ~ onSuccess: ~ event:",
+            event
+          );
           // await this.onTrackingInvoke("succeeded", event);
         },
         onFailure: async (id, event, error) => {
+          console.log(
+            "🚀 ===> ~ ahoy.ts:192 ~ Ahoy ~ onFailure: ~ event:",
+            event,
+            error
+          );
           // await this.onTrackingInvoke("failure", event, error);
         },
         onFailed: async (id, event, error) => {
+          console.log(
+            "🚀 ===> ~ ahoy.ts:200 ~ Ahoy ~ onFailed: ~ event:",
+            event,
+            error
+          );
           // await this.onTrackingInvoke("failed", event, error);
         },
         ...WORKERS_OPTIONS,
@@ -207,12 +221,26 @@ export default class Ahoy {
       },
       {
         onSuccess: async (id, event) => {
+          console.log(
+            "🚀 ===> ~ ahoy.ts:185 ~ Ahoy ~ onSuccess: ~ event:",
+            event
+          );
           // await this.onTrackingInvoke("succeeded", event);
         },
         onFailure: async (id, event, error) => {
+          console.log(
+            "🚀 ===> ~ ahoy.ts:192 ~ Ahoy ~ onFailure: ~ event:",
+            event,
+            error
+          );
           // await this.onTrackingInvoke("failure", event, error);
         },
         onFailed: async (id, event, error) => {
+          console.log(
+            "🚀 ===> ~ ahoy.ts:200 ~ Ahoy ~ onFailed: ~ event:",
+            event,
+            error
+          );
           // await this.onTrackingInvoke("failed", event, error);
         },
         ...WORKERS_OPTIONS,
