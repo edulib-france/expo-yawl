@@ -1,8 +1,8 @@
 import NetInfo from "@react-native-community/netinfo";
 import queueFactory from "react-native-queue";
 
-import { postFetch } from "./api/postFetch";
-import { generateUUID } from "./utils/generateUUID";
+import { postFetch } from "./postFetch";
+import { generateUUID } from "./generateUUID";
 
 /*
 
