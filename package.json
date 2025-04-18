@@ -29,9 +29,13 @@
   "license": "MIT",
   "homepage": "https://github.com/edulib-france/expo-yawl#readme",
   "dependencies": {
+    "@react-native-community/netinfo": "^4.2.0",
+    "lodash": "^4.17.11",
+    "react-native-queue": "https://github.com/inkitt/react-native-queue-asyncstorage.git#async-storage-galatea-384",
     "wretch": "^2.11.0"
   },
   "devDependencies": {
+    "@types/lodash": "^4.17.16",
     "@types/react": "~18.3.12",
     "expo": "~52.0.0",
     "expo-module-scripts": "^4.0.4",
