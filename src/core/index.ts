@@ -1,7 +1,7 @@
 import NetInfo from "@react-native-community/netinfo";
 import queueFactory from "react-native-queue";
 
-import { postFetch } from "./postFetch";
+import { API_URL, Env, YawlApi, yawlApi } from "./api";
 import { generateUUID } from "./generateUUID";
 
 /*
@@ -35,12 +35,6 @@ INPUT PARAMETERS:
 }
 */
 
-type Env = "prod" | "staging";
-const API_URL: { [key in Env]: string } = {
-  prod: "https://www.edulib.fr",
-  staging: "https://staging.edulib.fr",
-} as const;
-
 const JOB_VISITOR = "visitor";
 const JOB_TRACKING = "tracking";
 type JOB_TYPES = typeof JOB_TRACKING | typeof JOB_VISITOR;
@@ -60,12 +54,14 @@ export default class Ahoy {
   private queue: any;
   private apiKey: string;
   private url: string;
+  private api: YawlApi;
 
   constructor({ apiKey, env = "prod" }: { apiKey: string; env?: Env }) {
     this.apiKey = apiKey;
     this.url = API_URL[env];
     this.visitId = generateUUID();
     this.visitorId = generateUUID();
+    this.api = yawlApi({ apiKey, env });
   }
 
   init = async () => {
@@ -123,10 +119,10 @@ export default class Ahoy {
       },
     };
 
-    return this.trackInvoke("events", trackEvent);
+    return this.api.sendEvent(trackEvent);
   };
 
-  private trackVisit = (event) => this.trackInvoke("visits", event);
+  private trackVisit = (event) => this.api.sendVisit(event);
 
   track = (name: string, properties: object = {}) => {
     const event = {
@@ -164,12 +160,6 @@ export default class Ahoy {
       properties[k] = typeof val === "boolean" ? val.toString() : val;
     });
     return properties;
-  };
-
-  private trackInvoke = async (call: "visits" | "events", params: unknown) => {
-    const _url = `${this.url}/ahoy/${call}`;
-    const headers = { "Api-Key": this.apiKey };
-    return postFetch(_url, params, headers);
   };
 
   private addTrackingWorker = () => {
