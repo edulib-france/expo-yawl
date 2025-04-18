@@ -45,7 +45,6 @@ const WORKERS_OPTIONS = {
 };
 
 // const onTrackingEvents = ["started", "succeeded", "failure", "failed", "error"];
-// const trackEvents = ["event", "visit"];
 export default class Ahoy {
   private visitId: string;
   private visitorId: string;
