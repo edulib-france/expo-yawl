@@ -27,8 +27,11 @@ export default function App() {
             disabled={!isYawlReady}
             title="Set value"
             onPress={async () => {
-              yawl.track("rn-test");
-              // setTest(aa);
+              yawl.track({
+                name: "rn-test",
+                establishment_account_id: "establishment_account_id",
+                user_type: "user_type",
+              });
             }}
           />
         </Group>

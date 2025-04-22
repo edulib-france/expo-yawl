@@ -5,6 +5,7 @@ import queueFactory from "react-native-queue";
 import { Env, YawlApi, yawlApi } from "./api";
 import { getDeviceInfo } from "./deviceInfo";
 import { generateUUID } from "./generateUUID";
+import { YawlEvent } from "../Yawl.types";
 
 /*
 
@@ -61,19 +62,21 @@ export default class Yawl {
     }
   };
 
-  track = (name: string, properties: object = {}) => {
-    const event = {
-      id: generateUUID(),
-      visit_id: this.visitId,
-      _visitor_id: this.visitorId,
-      timestamp: new Date().getTime() / 1000.0,
-      name,
-      properties: this.prepareProperties(properties),
+  track = (event: YawlEvent) => {
+    const _event = {
+      event: {
+        id: generateUUID(),
+        visit_token: this.visitId,
+        visitor_token: this.visitorId,
+        timestamp: new Date().getTime() / 1000.0,
+        ...event,
+        // properties: this.prepareProperties(event.properties),
+      },
     };
     // Send event to all services before ahoy queue
     // await this.onTrackingInvoke("started", event);
     // Create ahoy job and add to queue
-    this.createJob(JOB_TRACKING, event);
+    this.createJob(JOB_TRACKING, _event);
     return event;
   };
 
@@ -91,7 +94,7 @@ export default class Yawl {
       visit: {
         visit_token: this.visitId,
         visitor_token: this.visitorId,
-        ...(await getDeviceInfo()),
+        ...getDeviceInfo(),
       },
     };
   }
@@ -108,23 +111,6 @@ export default class Yawl {
     this.queue = await queueFactory(true);
     this.addTrackingWorker();
     this.addVisitorWorker();
-  };
-
-  private trackEvent = async (_event) => {
-    const event = Object.assign({}, _event);
-
-    if (event.time) {
-      event.timestamp = event.time;
-    }
-
-    const trackEvent = {
-      event: {
-        ...event,
-        // applicationBundleId: this.applicationBundleId,
-      },
-    };
-
-    return this.api.sendEvent(trackEvent);
   };
 
   private trackVisit = (event) => this.api.sendVisit(event);
@@ -156,7 +142,7 @@ export default class Yawl {
       JOB_TRACKING,
       async (id, event) => {
         if (this.hasInternetAccess) {
-          const res = await this.trackEvent(event);
+          const res = await this.api.sendEvent(event);
           // TODO: parse response
           console.debug("🚀 ===> ~ res:", res);
           return { ok: true };
@@ -165,19 +151,15 @@ export default class Yawl {
       },
       {
         onSuccess: async (id, event) => {
-          console.debug("🚀 ===> JOB_TRACKING ~ onSuccess: ~ event:", id);
+          console.debug("🚀 ===> JOB_TRACKING onSuccess", id, event);
           // await this.onTrackingInvoke("succeeded", event);
         },
         onFailure: async (id, event, error) => {
-          console.debug(
-            "🚀 ===> JOB_TRACKING ~ onFailure: ~ error:",
-            id,
-            error
-          );
+          console.debug("🚀 ===> JOB_TRACKING onFailure", id, event, error);
           // await this.onTrackingInvoke("failure", event, error);
         },
         onFailed: async (id, event, error) => {
-          console.debug("🚀 ===> JOB_TRACKING ~ onFailed: ~ error:", id, error);
+          console.debug("🚀 ===> JOB_TRACKING onFailed", id, event, error);
           // await this.onTrackingInvoke("failed", event, error);
         },
         ...WORKERS_OPTIONS,

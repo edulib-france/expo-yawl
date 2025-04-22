@@ -17,3 +17,11 @@ export type YawlViewProps = {
   onLoad: (event: { nativeEvent: OnLoadEventPayload }) => void;
   style?: StyleProp<ViewStyle>;
 };
+
+export type YawlEvent = {
+  name: string;
+  ean?: string;
+  establishment_account_id: string;
+  properties?: Record<string, unknown>;
+  user_type: string;
+};
