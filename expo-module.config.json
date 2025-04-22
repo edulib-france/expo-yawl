@@ -1,9 +1,3 @@
 {
-  "platforms": ["apple", "android", "web"],
-  "apple": {
-    "modules": ["YawlModule"]
-  },
-  "android": {
-    "modules": ["fr.edulib.expo_yawl.YawlModule"]
-  }
+  "platforms": ["apple", "android", "web"]
 }
