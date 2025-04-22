@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Button, SafeAreaView, ScrollView, Text, View } from "react-native";
 
 export const yawl = new Yawl({
-  apiKey: "cda712a73aff22114b6f62871697ea15",
+  apiKey: process.env.EXPO_PUBLIC_API_KEY,
   env: "staging",
 });
 

@@ -158,22 +158,26 @@ export default class Yawl {
         if (this.hasInternetAccess) {
           const res = await this.trackEvent(event);
           // TODO: parse response
-          console.log("🚀 ===> ~ res:", res);
+          console.debug("🚀 ===> ~ res:", res);
           return { ok: true };
         }
         throw new Error("Network request failed");
       },
       {
         onSuccess: async (id, event) => {
-          console.log("🚀 ===> JOB_TRACKING ~ onSuccess: ~ event:", id);
+          console.debug("🚀 ===> JOB_TRACKING ~ onSuccess: ~ event:", id);
           // await this.onTrackingInvoke("succeeded", event);
         },
         onFailure: async (id, event, error) => {
-          console.log("🚀 ===> JOB_TRACKING ~ onFailure: ~ error:", id, error);
+          console.debug(
+            "🚀 ===> JOB_TRACKING ~ onFailure: ~ error:",
+            id,
+            error
+          );
           // await this.onTrackingInvoke("failure", event, error);
         },
         onFailed: async (id, event, error) => {
-          console.log("🚀 ===> JOB_TRACKING ~ onFailed: ~ error:", id, error);
+          console.debug("🚀 ===> JOB_TRACKING ~ onFailed: ~ error:", id, error);
           // await this.onTrackingInvoke("failed", event, error);
         },
         ...WORKERS_OPTIONS,
@@ -188,7 +192,7 @@ export default class Yawl {
         if (this.hasInternetAccess) {
           const res = await this.trackVisit(event);
           // TODO: parse response
-          console.log("🚀 ===> ~ res:", res);
+          console.debug("🚀 ===> ~ res:", res);
           return { ok: true };
         }
 
@@ -196,15 +200,15 @@ export default class Yawl {
       },
       {
         onSuccess: async (id, event) => {
-          console.log("🚀 ===> JOB_VISITOR ~ onSuccess: ~ event:", id, event);
+          console.debug("🚀 ===> JOB_VISITOR ~ onSuccess: ~ event:", id, event);
           // await this.onTrackingInvoke("succeeded", event);
         },
         onFailure: async (id, event, error) => {
-          console.log("🚀 ===> JOB_VISITOR ~ onFailure: ~ error:", id, error);
+          console.debug("🚀 ===> JOB_VISITOR ~ onFailure: ~ error:", id, error);
           // await this.onTrackingInvoke("failure", event, error);
         },
         onFailed: async (id, event, error) => {
-          console.log("🚀 ===> JOB_VISITOR ~ onFailed: ~ error:", id, error);
+          console.debug("🚀 ===> JOB_VISITOR ~ onFailed: ~ error:", id, error);
           // await this.onTrackingInvoke("failed", event, error);
         },
         ...WORKERS_OPTIONS,
