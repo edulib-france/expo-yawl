@@ -10,10 +10,7 @@ describe("API Tests", () => {
     await expect(api.sendVisit(data)).rejects.toThrowError("Unauthorized");
   });
   it("should send visit", async () => {
-    const api = yawlApi({
-      ...apiConfig,
-      apiKey: "cda712a73aff22114b6f62871697ea15",
-    });
+    const api = yawlApi(apiConfig);
     await expect(api.sendVisit(data)).resolves.toMatchObject({
       message: "Ahoy::Visit created",
     });
