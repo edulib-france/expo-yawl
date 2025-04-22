@@ -1,3 +1,4 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import NetInfo from "@react-native-community/netinfo";
 import queueFactory from "react-native-queue";
 
@@ -18,20 +19,6 @@ INPUT PARAMETERS:
     failed:    async (event)           - function that will be invoked if tracking fails
     error:     async ({ name, error }) - function that will be invoked when error occured
   }
-
-  // will be chosen one: trackPosts or trackUrls.
-  // if not presented just skip it or should be equal null
-  // if two presented, trackPosts will have more priority
-  trackPosts: {
-    event: async (params) - function that will be invoked when track an event. Individual implementation
-    visit: async (params) - function that will be invoked when track a visit.  Individual implementation
-  }
-  trackUrls: {
-    event: string - url for event where request should be sent to
-    visit: string - url for visit where request should be sent to
-  }
-
-
   offlineMode: boolean - ONLY FOR TESTING PURPOSES, indicates if you want to test with no internet
 }
 */
@@ -61,8 +48,8 @@ export default class Yawl {
   init = async () => {
     await this.initConnection();
     await this.initQueue();
+    await this.loadVisitorId();
     const data = await this.getVisitData();
-    console.log("🚀 ===> ~ index.ts:65 ~ Yawl ~ init= ~ data:", data);
     this.createJob(JOB_VISITOR, data);
   };
 
@@ -89,6 +76,15 @@ export default class Yawl {
     this.createJob(JOB_TRACKING, event);
     return event;
   };
+
+  private async loadVisitorId(): Promise<void> {
+    const visitorIdKey = "yawl_visitorId";
+    const visitorId = await AsyncStorage.getItem(visitorIdKey);
+    if (!visitorId)
+      return await AsyncStorage.setItem(visitorIdKey, this.visitorId);
+
+    this.visitorId = visitorId;
+  }
 
   private async getVisitData(): Promise<object> {
     return {
