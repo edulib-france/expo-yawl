@@ -34,7 +34,8 @@
     "wretch": "^2.11.0",
     "expo-device": "~7.0.3",
     "expo-application": "~6.0.2",
-    "expo-network": "~7.0.5"
+    "expo-network": "~7.0.5",
+    "expo-crypto": "~14.0.2"
   },
   "devDependencies": {
     "@types/react": "~18.3.12",
