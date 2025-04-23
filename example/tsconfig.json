@@ -3,8 +3,8 @@
   "compilerOptions": {
     "strict": true,
     "paths": {
-      // "@edulib-france/expo-yawl": ["../src/index"],
-      // "@edulib-france/expo-yawl/*": ["../src/*"]
+      "@edulib-france/expo-yawl": ["../src/index"],
+      "@edulib-france/expo-yawl/*": ["../src/*"]
     }
   }
 }
