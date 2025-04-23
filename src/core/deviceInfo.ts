@@ -1,23 +1,19 @@
-import {
-  getDeviceType,
-  getReadableVersion,
-  getSystemName,
-  getSystemVersion,
-} from "react-native-device-info";
+import { nativeApplicationVersion } from "expo-application";
+import { deviceType, DeviceType, osName, osVersion } from "expo-device";
 
 export type YawlDeviceInfo = {
-  app_version: string;
-  device_type: string;
-  os: string;
-  os_version: string;
+  app_version?: string;
+  device_type?: string;
+  os?: string;
+  os_version?: string;
   platform: string;
 };
 export const getDeviceInfo = (): YawlDeviceInfo => {
   return {
-    app_version: getReadableVersion(),
-    device_type: getDeviceType(),
-    os: getSystemName(),
-    os_version: getSystemVersion(),
+    app_version: nativeApplicationVersion ?? undefined,
+    device_type: DeviceType[deviceType ?? 0],
+    os: osName ?? undefined,
+    os_version: osVersion ?? undefined,
     platform: "react-native",
   };
 };
