@@ -1,6 +1,6 @@
 {
   "name": "@edulib-france/expo-yawl",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "private": false,
   "publishConfig": {
     "access": "public"
@@ -25,7 +25,10 @@
     "@edulib-france/expo-yawl",
     "Yawl"
   ],
-  "repository": "https://github.com/edulib-france/expo-yawl",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/edulib-france/expo-yawl.git"
+  },
   "bugs": {
     "url": "https://github.com/edulib-france/expo-yawl/issues"
   },
@@ -34,7 +37,7 @@
   "homepage": "https://github.com/edulib-france/expo-yawl#readme",
   "dependencies": {
     "@react-native-async-storage/async-storage": "1.23.1",
-    "react-native-queue": "https://github.com/Bravado-network/react-native-queue-asyncstorage.git#async-storage-galatea-384",
+    "react-native-queue": "git+https://github.com/Bravado-network/react-native-queue-asyncstorage.git#async-storage-galatea-384",
     "wretch": "^2.11.0",
     "expo-device": "~7.0.3",
     "expo-application": "~6.0.2",
