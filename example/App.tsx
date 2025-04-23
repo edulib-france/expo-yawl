@@ -1,36 +1,38 @@
-import { useEvent } from 'expo';
-import Yawl, { YawlView } from '@edulib-france/expo-yawl';
-import { Button, SafeAreaView, ScrollView, Text, View } from 'react-native';
+import Yawl from "@edulib-france/expo-yawl";
+import { useEffect, useState } from "react";
+import { Button, SafeAreaView, ScrollView, Text, View } from "react-native";
+
+export const yawl = new Yawl({
+  apiKey: process.env.EXPO_PUBLIC_API_KEY,
+  env: "staging",
+});
 
 export default function App() {
-  const onChangePayload = useEvent(Yawl, 'onChange');
+  const [isYawlReady, setIsYawlReady] = useState<boolean>(false);
+  useEffect(() => {
+    yawl.init().then(() => {
+      setIsYawlReady(true);
+    });
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.container}>
         <Text style={styles.header}>Module API Example</Text>
-        <Group name="Constants">
-          <Text>{Yawl.PI}</Text>
-        </Group>
-        <Group name="Functions">
-          <Text>{Yawl.hello()}</Text>
-        </Group>
+        {/* <Group name="Functions"> */}
+        {/* <Text>{test}</Text> */}
+        {/* </Group> */}
         <Group name="Async functions">
           <Button
+            disabled={!isYawlReady}
             title="Set value"
             onPress={async () => {
-              await Yawl.setValueAsync('Hello from JS!');
+              yawl.track({
+                name: "rn-test",
+                establishment_account_id: "establishment_account_id",
+                user_type: "user_type",
+              });
             }}
-          />
-        </Group>
-        <Group name="Events">
-          <Text>{onChangePayload?.value}</Text>
-        </Group>
-        <Group name="Views">
-          <YawlView
-            url="https://www.example.com"
-            onLoad={({ nativeEvent: { url } }) => console.log(`Loaded: ${url}`)}
-            style={styles.view}
           />
         </Group>
       </ScrollView>
@@ -58,13 +60,13 @@ const styles = {
   },
   group: {
     margin: 20,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderRadius: 10,
     padding: 20,
   },
   container: {
     flex: 1,
-    backgroundColor: '#eee',
+    backgroundColor: "#eee",
   },
   view: {
     flex: 1,

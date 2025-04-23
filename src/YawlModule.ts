@@ -1,12 +1,1 @@
-import { NativeModule, requireNativeModule } from "expo";
-
-import { YawlModuleEvents } from "./Yawl.types";
-
-declare class YawlModule extends NativeModule<YawlModuleEvents> {
-  PI: number;
-  hello(): string;
-  setValueAsync(value: string): Promise<void>;
-}
-
-// This call loads the native module object from the JSI.
-export default requireNativeModule<YawlModule>("Yawl");
+export { default } from "./core/index";
