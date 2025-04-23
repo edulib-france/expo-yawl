@@ -30,11 +30,11 @@
   "homepage": "https://github.com/edulib-france/expo-yawl#readme",
   "dependencies": {
     "@react-native-async-storage/async-storage": "1.23.1",
-    "@react-native-community/netinfo": "11.4.1",
     "react-native-queue": "https://github.com/Bravado-network/react-native-queue-asyncstorage.git#async-storage-galatea-384",
     "wretch": "^2.11.0",
     "expo-device": "~7.0.3",
-    "expo-application": "~6.0.2"
+    "expo-application": "~6.0.2",
+    "expo-network": "~7.0.5"
   },
   "devDependencies": {
     "@types/react": "~18.3.12",

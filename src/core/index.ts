@@ -1,11 +1,11 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import NetInfo from "@react-native-community/netinfo";
+import { addNetworkStateListener, getNetworkStateAsync } from "expo-network";
 import queueFactory from "react-native-queue";
 
+import { YawlEvent } from "../Yawl.types";
 import { Env, YawlApi, yawlApi } from "./api";
 import { getDeviceInfo } from "./deviceInfo";
 import { generateUUID } from "./generateUUID";
-import { YawlEvent } from "../Yawl.types";
 
 /*
 
@@ -36,7 +36,7 @@ export default class Yawl {
   private visitId: string;
   private visitorId: string;
   private offlineMode: boolean = false;
-  private hasInternetAccess: boolean | null = true;
+  private hasInternetAccess: boolean | undefined = true;
   private queue: any;
   private api: YawlApi;
 
@@ -100,9 +100,9 @@ export default class Yawl {
   }
 
   private initConnection = async () => {
-    const state = await NetInfo.fetch();
+    const state = await getNetworkStateAsync();
     this.hasInternetAccess = state.isConnected;
-    NetInfo.addEventListener(
+    addNetworkStateListener(
       (state) => (this.hasInternetAccess = state.isConnected)
     );
   };
