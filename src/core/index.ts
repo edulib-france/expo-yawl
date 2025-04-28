@@ -2,7 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { addNetworkStateListener, getNetworkStateAsync } from "expo-network";
 import queueFactory from "react-native-queue";
 
-import { YawlEvent } from "../Yawl.types";
+import { YawlEvent, YawlView } from "../Yawl.types";
 import { Env, YawlApi, yawlApi } from "./api";
 import { getDeviceInfo } from "./deviceInfo";
 import { generateUUID } from "./generateUUID";
@@ -77,7 +77,24 @@ export default class Yawl {
     // await this.onTrackingInvoke("started", event);
     // Create ahoy job and add to queue
     this.createJob(JOB_TRACKING, _event);
-    return event;
+    return _event;
+  };
+
+  trackView = (view: YawlView) => {
+    const _event = {
+      event: {
+        name: "$view",
+        url: view.page,
+        title: view.page,
+        page: view.page,
+        id: generateUUID(),
+        visit_token: this.visitId,
+        visitor_token: this.visitorId,
+        timestamp: new Date().getTime() / 1000.0,
+      },
+    };
+    this.createJob(JOB_TRACKING, _event);
+    return _event;
   };
 
   private async loadVisitorId(): Promise<void> {
