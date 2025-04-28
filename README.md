@@ -23,23 +23,23 @@ npm install @edulib-france/expo-yawl
 
 ### Configure for Android
 
-
-
-
 ### Configure for iOS
 
 Run `npx pod-install` after installing the npm package.
 
 # Configuration
+
 ```ts
 export const yawl = new Yawl({
-  apiKey: 'key',
+  apiKey: "key",
   env: "staging | prod", // default is prod
 });
 ```
 
 # Usage
+
 ## Track Events
+
 ```ts
 yawl.track({
   name: string,
@@ -50,13 +50,12 @@ yawl.track({
 });
 ```
 
-## Track  Views
+## Track Views
+
+We still need to find the best way to get the view name in React Native. For now, we can use the `page` property to set the view name.
+
 ```ts
 yawl.trackView({
-  // Auto values
-  name: '$view',
-  url: window.location.href,
-  title: document.title,
-  page: config.page || window.location.pathname;
+  page: 'page_name'
 });
 ```
