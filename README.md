@@ -2,7 +2,7 @@
 
 Yawl for React Native
 
-# API documentation
+# TODO: API documentation
 
 - [Documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/@edulib-france/yawl/)
 - [Documentation for the main branch](https://docs.expo.dev/versions/unversioned/sdk/@edulib-france/yawl/)
@@ -30,6 +30,33 @@ npm install @edulib-france/expo-yawl
 
 Run `npx pod-install` after installing the npm package.
 
-# Contributing
+# Configuration
+```ts
+export const yawl = new Yawl({
+  apiKey: 'key',
+  env: "staging | prod", // default is prod
+});
+```
 
-Contributions are very welcome! Please refer to guidelines described in the [contributing guide]( https://github.com/expo/expo#contributing).
+# Usage
+## Track Events
+```ts
+yawl.track({
+  name: string,
+  ean?: string,
+  establishment_account_id?: string,
+  properties?: Record<string, unknown>,
+  user_type?: string
+});
+```
+
+## Track  Views
+```ts
+yawl.trackView({
+  // Auto values
+  name: '$view',
+  url: window.location.href,
+  title: document.title,
+  page: config.page || window.location.pathname;
+});
+```
