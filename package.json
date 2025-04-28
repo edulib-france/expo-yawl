@@ -15,6 +15,7 @@
     "test": "vitest",
     "prepare": "expo-module prepare",
     "prepublishOnly": "expo-module prepublishOnly",
+    "publish:npm": "npm clean && npm build && npm publish",
     "expo-module": "expo-module",
     "open:ios": "xed example/ios",
     "open:android": "open -a \"Android Studio\" example/android"
