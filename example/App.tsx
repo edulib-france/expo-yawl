@@ -32,6 +32,9 @@ export default function App() {
                 establishment_account_id: "establishment_account_id",
                 user_type: "user_type",
               });
+              yawl.trackView({
+                page: "page-title",
+              });
             }}
           />
         </Group>

@@ -5,3 +5,7 @@ export type YawlEvent = {
   properties?: Record<string, unknown>;
   user_type: string;
 };
+
+export type YawlView = {
+  page: string;
+};
