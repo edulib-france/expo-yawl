@@ -1,9 +1,9 @@
 export type YawlEvent = {
   name: string;
   ean?: string;
-  establishment_account_id: string;
+  establishment_account_id?: string;
   properties?: Record<string, unknown>;
-  user_type: string;
+  user_type?: string;
 };
 
 export type YawlView = {
