@@ -1,3 +1,5 @@
+![NPM Version](https://img.shields.io/npm/v/@edulib-france/expo-yawl)
+
 # @edulib-france/expo-yawl
 
 Yawl for React Native
@@ -49,6 +51,6 @@ We still need to find the best way to get the view name in React Native. For now
 
 ```ts
 yawl.trackView({
-  page: 'page_name'
+  page: "page_name",
 });
 ```
