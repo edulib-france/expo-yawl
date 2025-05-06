@@ -33,6 +33,14 @@ export const yawl = new Yawl({
 
 # Usage
 
+## Initialize Yawl
+
+Must be called before any other Yawl method.
+
+```ts
+await yawl.init();
+```
+
 ## Track Events
 
 ```ts
