@@ -39,11 +39,13 @@ export default class Yawl {
   private hasInternetAccess: boolean | undefined = true;
   private queue: any;
   private api: YawlApi;
+  private baseUrl: string;
 
   constructor({ apiKey, env = "prod" }: { apiKey: string; env?: Env }) {
     this.api = yawlApi({ apiKey, env });
     this.visitId = generateUUID();
     this.visitorId = generateUUID();
+    this.baseUrl = `react-native-${apiKey}`;
   }
 
   init = async () => {
@@ -84,9 +86,10 @@ export default class Yawl {
     const _event = {
       event: {
         name: "$view",
-        url: view.page,
-        title: view.page,
+        url: this.baseUrl,
+        title: view.title,
         page: view.page,
+        properties: view.properties,
         id: generateUUID(),
         visit_token: this.visitId,
         visitor_token: this.visitorId,

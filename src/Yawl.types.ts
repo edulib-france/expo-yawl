@@ -8,4 +8,6 @@ export type YawlEvent = {
 
 export type YawlView = {
   page: string;
+  title?: string;
+  properties?: Record<string, unknown>;
 };
