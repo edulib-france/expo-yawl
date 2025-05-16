@@ -60,5 +60,54 @@ We still need to find the best way to get the view name in React Native. For now
 ```ts
 yawl.trackView({
   page: "page_name",
+  title: "page_title",
+  properties: {
+    // additional properties
+  },
 });
+```
+
+### React Navigation
+
+If you are using React Navigation, you can use the `yawl.setViewTracker()` to record the current screen name and params.
+Based on [their documentation](https://reactnavigation.org/docs/5.x/screen-tracking/) you could :
+
+```ts
+export default () => {
+  const navigationRef = useRef();
+  const routeNameRef = useRef();
+  ...
+  // sets the view tracker so `yawl.trackView()` can be used anywhere
+  yawl.setViewTracker(() => {
+    const currentRoute = navigationRef?.current?.getCurrentRoute()
+    return ({
+      page: currentRoute.name,
+      properties: currentRoute.params
+    })
+  })
+
+  return (
+    <NavigationContainer
+      ref={navigationRef}
+      onReady={() =>
+        // yawl.trackView() if the app is opened from a cold start
+        (routeNameRef.current = navigationRef.current.getCurrentRoute().name)
+      }
+      onStateChange={async () => {
+        const previousRouteName = routeNameRef.current;
+        const currentRouteName = navigationRef.current.getCurrentRoute().name;
+
+        if (previousRouteName !== currentRouteName) {
+          // The line below uses the yawl.setViewTracker() setup to get the current screen name and params
+          await yawl.trackView();
+        }
+
+        // Save the current route name for later comparison
+        routeNameRef.current = currentRouteName;
+      }}
+    >
+      {/* ... */}
+    </NavigationContainer>
+  );
+};
 ```
