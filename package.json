@@ -38,12 +38,12 @@
   "homepage": "https://github.com/edulib-france/expo-yawl#readme",
   "dependencies": {
     "@react-native-async-storage/async-storage": "1.23.1",
-    "react-native-queue": "git+https://github.com/edulib-france/react-native-queue-asyncstorage.git#005bb41",
-    "wretch": "^2.11.0",
-    "expo-device": "~7.0.3",
     "expo-application": "~6.0.2",
+    "expo-crypto": "~14.0.2",
+    "expo-device": "~7.0.3",
     "expo-network": "~7.0.5",
-    "expo-crypto": "~14.0.2"
+    "react-native-queue": "git+https://github.com/edulib-france/react-native-queue-asyncstorage.git#005bb41",
+    "wretch": "^2.11.0"
   },
   "devDependencies": {
     "@types/react": "~18.3.12",
