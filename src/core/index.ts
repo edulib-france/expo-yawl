@@ -40,6 +40,7 @@ export default class Yawl {
   private queue: any;
   private api: YawlApi;
   private baseUrl: string;
+  private viewTracker?: () => YawlView;
 
   constructor({ apiKey, env = "prod" }: { apiKey: string; env?: Env }) {
     this.api = yawlApi({ apiKey, env });
@@ -54,14 +55,6 @@ export default class Yawl {
     await this.loadVisitorId();
     const data = await this.getVisitData();
     this.createJob(JOB_VISITOR, data);
-  };
-
-  setVisitId = async (visitId: string): Promise<void> => {
-    this.visitId = visitId;
-
-    if (this.hasInternetAccess) {
-      this.trackVisit(await this.getVisitData());
-    }
   };
 
   track = (event: YawlEvent) => {
@@ -82,14 +75,30 @@ export default class Yawl {
     return _event;
   };
 
-  trackView = (view: YawlView) => {
+  /**
+   * Track a view event.
+   * `viewTracker` object takes precedence over the `view` parameter.
+   * Properties from both `view` and `viewTracker` are merged.
+   * If `viewTracker` is not provided, the `view` parameter must contain a page.
+   *
+   * @param view - Optional view object containing page, title, and properties. Must be set if viewTracker is not provided, otherwise the event will not be sent.
+   * @returns the event object with the tracking data.
+   */
+  trackView = (view?: YawlView) => {
+    const trackedView = this.viewTracker?.();
+    if (!view?.page && !trackedView?.page) {
+      console.warn(
+        "Yawl: trackView() - page is required; Either set it in the view param or yawl.setViewTracker(); Event not sent"
+      );
+      return;
+    }
     const _event = {
       event: {
         name: "$view",
         url: this.baseUrl,
-        title: view.title,
-        page: view.page,
-        properties: view.properties,
+        ...view,
+        ...trackedView,
+        properties: { ...view?.properties, ...trackedView?.properties },
         id: generateUUID(),
         visit_token: this.visitId,
         visitor_token: this.visitorId,
@@ -99,6 +108,17 @@ export default class Yawl {
     this.createJob(JOB_TRACKING, _event);
     return _event;
   };
+
+  setVisitId = async (visitId: string): Promise<void> => {
+    this.visitId = visitId;
+
+    if (this.hasInternetAccess) {
+      this.trackVisit(await this.getVisitData());
+    }
+  };
+
+  setViewTracker = (viewTracker: () => YawlView) =>
+    (this.viewTracker = viewTracker);
 
   private async loadVisitorId(): Promise<void> {
     const visitorIdKey = "yawl_visitorId";
