@@ -1,6 +1,6 @@
 {
   "name": "@edulib-france/expo-yawl",
-  "version": "0.0.3",
+  "version": "0.0.5",
   "private": false,
   "publishConfig": {
     "access": "public"
@@ -10,12 +10,13 @@
   "types": "build/index.d.ts",
   "scripts": {
     "build": "expo-module build",
+    "build:ci": "export EXPO_NONINTERACTIVE=1 && expo-module build",
     "clean": "expo-module clean",
     "lint": "expo-module lint",
     "test": "vitest",
     "prepare": "expo-module prepare",
     "prepublishOnly": "expo-module prepublishOnly",
-    "publish:npm": "npm clean && npm build && npm publish",
+    "publish:npm": "npm run clean && npm run build:ci && npm publish",
     "expo-module": "expo-module",
     "open:ios": "xed example/ios",
     "open:android": "open -a \"Android Studio\" example/android"
@@ -38,6 +39,7 @@
   "homepage": "https://github.com/edulib-france/expo-yawl#readme",
   "dependencies": {
     "@react-native-async-storage/async-storage": "1.23.1",
+    "expo": "~52.0.46",
     "expo-application": "~6.0.2",
     "expo-crypto": "~14.0.2",
     "expo-device": "~7.0.3",
