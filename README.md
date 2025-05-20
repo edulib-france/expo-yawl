@@ -55,8 +55,6 @@ yawl.track({
 
 ## Track Views
 
-We still need to find the best way to get the view name in React Native. For now, we can use the `page` property to set the view name.
-
 ```ts
 yawl.trackView({
   page: "page_name",
