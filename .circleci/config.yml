@@ -8,7 +8,7 @@ jobs:
     #   - image: cimg/node:24.7.0
     # resource_class: medium
     macos:
-      xcode: 16.6.0
+      xcode: 16.4.0
     resource_class: macos.m1.medium.gen1
     steps:
       - checkout
