@@ -4,12 +4,15 @@ orbs:
 
 jobs:
   build:
-    docker:
-      - image: cimg/node:24.7.0
-    resource_class: medium
+    # docker:
+    #   - image: cimg/node:24.7.0
+    # resource_class: medium
+    macos:
+      xcode: 16.6.0
+    resource_class: macos.m1.medium.gen1
     steps:
       - checkout
-      - run: sudo apt update && sudo apt install rsync
+      # - run: sudo apt update && sudo apt install rsync
       - node/install-packages
       - run: npm run lint
       - run: npm run build:ci
