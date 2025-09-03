@@ -38,7 +38,7 @@
   "license": "MIT",
   "homepage": "https://github.com/edulib-france/expo-yawl#readme",
   "dependencies": {
-    "@react-native-async-storage/async-storage": "1.23.1",
+    "@react-native-async-storage/async-storage": "2.2.0",
     "expo": "~52.0.46",
     "expo-application": "~6.0.2",
     "expo-crypto": "~14.0.2",
