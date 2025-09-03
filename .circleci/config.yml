@@ -10,7 +10,8 @@ jobs:
       - checkout
       - run: sudo apt update && sudo apt install rsync
       - node/install-packages
-      - run: npm run build
+      - run: npm run lint
+      - run: npm run build:ci
 
 workflows:
   build:
