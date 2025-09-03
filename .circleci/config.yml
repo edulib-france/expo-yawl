@@ -8,6 +8,7 @@ jobs:
       - image: cimg/node:24.7.0
     steps:
       - checkout
+      - run: sudo apt update && sudo apt install rsync
       - node/install-packages
       - run: npm run build
 
