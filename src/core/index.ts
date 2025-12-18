@@ -120,6 +120,18 @@ export default class Yawl {
   setViewTracker = (viewTracker: () => YawlView) =>
     (this.viewTracker = viewTracker);
 
+  resetVisitor = async () => {
+    if (this.queue) {
+      await this.queue.flushQueue();
+    }
+
+    const visitorIdKey = "yawl_visitorId";
+    await AsyncStorage.removeItem(visitorIdKey);
+
+    this.visitorId = "";
+    this.visitId = "";
+  };
+
   private async loadVisitorId(): Promise<void> {
     const visitorIdKey = "yawl_visitorId";
     const visitorId = await AsyncStorage.getItem(visitorIdKey);
