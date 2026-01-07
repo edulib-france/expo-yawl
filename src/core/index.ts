@@ -32,6 +32,7 @@ const WORKERS_OPTIONS = {
   attempts: 1000,
   concurrency: 1,
 };
+const VISITOR_ID_KEY = "yawl_visitorId";
 export default class Yawl {
   private visitId: string;
   private visitorId: string;
@@ -120,11 +121,21 @@ export default class Yawl {
   setViewTracker = (viewTracker: () => YawlView) =>
     (this.viewTracker = viewTracker);
 
+  resetVisitor = async () => {
+    if (this.queue) {
+      await this.queue.flushQueue();
+    }
+
+    this.visitorId = "";
+    this.visitId = "";
+
+    await AsyncStorage.removeItem(VISITOR_ID_KEY);
+  };
+
   private async loadVisitorId(): Promise<void> {
-    const visitorIdKey = "yawl_visitorId";
-    const visitorId = await AsyncStorage.getItem(visitorIdKey);
+    const visitorId = await AsyncStorage.getItem(VISITOR_ID_KEY);
     if (!visitorId)
-      return await AsyncStorage.setItem(visitorIdKey, this.visitorId);
+      return await AsyncStorage.setItem(VISITOR_ID_KEY, this.visitorId);
 
     this.visitorId = visitorId;
   }
