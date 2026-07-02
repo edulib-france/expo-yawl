@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { addNetworkStateListener, getNetworkStateAsync } from "expo-network";
-import queueFactory from "react-native-queue";
+import queueFactory from 'react-native-queue';
 
 import { YawlEvent, YawlView } from "../Yawl.types";
 import { Env, YawlApi, yawlApi } from "./api";
@@ -164,7 +164,7 @@ export default class Yawl {
     this.addVisitorWorker();
   };
 
-  private trackVisit = (event) => this.api.sendVisit(event);
+  private trackVisit = (event: object) => this.api.sendVisit(event);
 
   private createJob = (name: JOB_TYPES, event: object) => {
     if (this.offlineMode) {
@@ -176,11 +176,12 @@ export default class Yawl {
     }
   };
 
-  private prepareProperties = (inter: object) => {
-    const properties = {
+  // @ts-expect-error TS6133 - reserved for future use
+  private prepareProperties = (inter: Record<string, unknown>) => {
+    const properties: Record<string, unknown> = {
       // applicationBundleId: this.applicationBundleId,
     };
-    Object.keys(inter).map((name, key) => {
+    Object.keys(inter).map((name) => {
       const k = name.replace(/[^a-z0-9_]/gi, "");
       const val = inter[name];
       properties[k] = typeof val === "boolean" ? val.toString() : val;
@@ -188,10 +189,11 @@ export default class Yawl {
     return properties;
   };
 
+
   private addTrackingWorker = () => {
     this.queue.addWorker(
       JOB_TRACKING,
-      async (id, event) => {
+      async (id: any, event: any) => {
         if (this.hasInternetAccess) {
           const res = await this.api.sendEvent(event);
           // TODO: parse response
@@ -201,15 +203,15 @@ export default class Yawl {
         throw new Error("Network request failed");
       },
       {
-        onSuccess: async (id, event) => {
+        onSuccess: async (id: any, event: any) => {
           console.debug("🚀 ===> JOB_TRACKING onSuccess", id, event);
           // await this.onTrackingInvoke("succeeded", event);
         },
-        onFailure: async (id, event, error) => {
+        onFailure: async (id: any, event: any, error: any) => {
           console.debug("🚀 ===> JOB_TRACKING onFailure", id, event, error);
           // await this.onTrackingInvoke("failure", event, error);
         },
-        onFailed: async (id, event, error) => {
+        onFailed: async (id: any, event: any, error: any) => {
           console.debug("🚀 ===> JOB_TRACKING onFailed", id, event, error);
           // await this.onTrackingInvoke("failed", event, error);
         },
@@ -221,7 +223,7 @@ export default class Yawl {
   private addVisitorWorker = () => {
     this.queue.addWorker(
       JOB_VISITOR,
-      async (id, event) => {
+      async (id: any, event: any) => {
         if (this.hasInternetAccess) {
           const res = await this.trackVisit(event);
           // TODO: parse response
@@ -232,15 +234,15 @@ export default class Yawl {
         throw new Error("Network request failed");
       },
       {
-        onSuccess: async (id, event) => {
+        onSuccess: async (id: any, event: any) => {
           console.debug("🚀 ===> JOB_VISITOR ~ onSuccess: ~ event:", id, event);
           // await this.onTrackingInvoke("succeeded", event);
         },
-        onFailure: async (id, event, error) => {
+        onFailure: async (id: any, event: any, error: any) => {
           console.debug("🚀 ===> JOB_VISITOR ~ onFailure: ~ error:", id, error);
           // await this.onTrackingInvoke("failure", event, error);
         },
-        onFailed: async (id, event, error) => {
+        onFailed: async (id: any, event: any, error: any) => {
           console.debug("🚀 ===> JOB_VISITOR ~ onFailed: ~ error:", id, error);
           // await this.onTrackingInvoke("failed", event, error);
         },
