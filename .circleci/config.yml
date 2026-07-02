@@ -4,12 +4,9 @@ orbs:
 
 jobs:
   build:
-    # docker:
-    #   - image: cimg/node:24.7.0
-    # resource_class: medium
     macos:
-      xcode: 16.4.0
-    resource_class: macos.m1.medium.gen1
+      xcode: 27.0
+    resource_class: m4pro.medium
     steps:
       - checkout
       # - run: sudo apt update && sudo apt install rsync
