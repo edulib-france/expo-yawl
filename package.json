@@ -45,7 +45,7 @@
     "expo-device": "~55.0.18",
     "expo-network": "~55.0.15",
     "react-native-queue": "git+https://github.com/edulib-france/react-native-queue-asyncstorage.git#005bb418d27f1a93f4372ba6764292a71d954b6e",
-    "wretch": "^3.0.0"
+    "wretch": "^3.0.9"
   },
   "devDependencies": {
     "@types/react": "~19.2.17",
