@@ -39,25 +39,25 @@
   "homepage": "https://github.com/edulib-france/expo-yawl#readme",
   "dependencies": {
     "@react-native-async-storage/async-storage": "3.1.1",
-    "expo": "~55.0.0",
-    "expo-application": "~55.0.16",
-    "expo-crypto": "~55.0.16",
-    "expo-device": "~55.0.18",
-    "expo-network": "~55.0.15",
+    "expo": "~57.0.4",
+    "expo-application": "~57.0.0",
+    "expo-crypto": "~57.0.0",
+    "expo-device": "~57.0.0",
+    "expo-network": "~57.0.0",
     "react-native-queue": "git+https://github.com/edulib-france/react-native-queue-asyncstorage.git#005bb418d27f1a93f4372ba6764292a71d954b6e",
     "wretch": "^3.0.9"
   },
   "devDependencies": {
     "@types/react": "~19.2.17",
     "eslint": "^9.39.4",
-    "eslint-config-expo": "^55.0.1",
-    "expo": "~55.0.0",
-    "expo-module-scripts": "^55.0.2",
+    "eslint-config-expo": "^57.0.0",
+    "expo": "~57.0.4",
+    "expo-module-scripts": "^56.0.3",
     "react-native": "0.86.0",
     "vitest": "^4.1.10"
   },
   "peerDependencies": {
-    "expo": "~55.0.0",
+    "expo": "~57.0.4",
     "react": "*",
     "react-native": "*"
   },
