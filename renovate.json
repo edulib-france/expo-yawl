@@ -13,5 +13,15 @@
       "automergeType": "branch"
     }
   ],
-  "ignorePaths": ["example/**"]
+  "ignorePaths": ["example/**"],
+  "ignoreDeps": [
+    "expo",
+    "expo-application",
+    "expo-crypto",
+    "expo-device",
+    "expo-network",
+    "eslint",
+    "eslint-config-expo",
+    "expo-module-scripts"
+  ]
 }
