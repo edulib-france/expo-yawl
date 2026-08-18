@@ -54,7 +54,7 @@
     "expo": "~55.0.27",
     "expo-module-scripts": "^55.0.2",
     "react-native": "0.87.0",
-    "vitest": "^4.1.10"
+    "vitest": "^4.1.11"
   },
   "peerDependencies": {
     "expo": "~55.0.27",
