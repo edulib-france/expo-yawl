@@ -6,6 +6,7 @@ import { YawlEvent, YawlView } from "../Yawl.types";
 import { Env, YawlApi, yawlApi } from "./api";
 import { getDeviceInfo } from "./deviceInfo";
 import { generateUUID } from "./generateUUID";
+import { VisitId } from "./visitId";
 
 /*
 
@@ -33,10 +34,8 @@ const WORKERS_OPTIONS = {
   concurrency: 1,
 };
 const VISITOR_ID_KEY = "yawl_visitorId";
-const VISIT_ID_TTL = 30 * 60 * 1000;
 export default class Yawl {
-  private visitId: string;
-  private visitIdCreatedAt: number;
+  private visitId: VisitId;
   private visitorId: string;
   private offlineMode: boolean = false;
   private hasInternetAccess: boolean | undefined = true;
@@ -47,8 +46,7 @@ export default class Yawl {
 
   constructor({ apiKey, env = "prod" }: { apiKey: string; env?: Env }) {
     this.api = yawlApi({ apiKey, env });
-    this.visitId = generateUUID();
-    this.visitIdCreatedAt = Date.now();
+    this.visitId = new VisitId();
     this.visitorId = generateUUID();
     this.baseUrl = `react-native-${apiKey}`;
   }
@@ -65,7 +63,7 @@ export default class Yawl {
     const _event = {
       event: {
         id: generateUUID(),
-        visit_token: this.getValidVisitId(),
+        visit_token: this.visitId.value,
         visitor_token: this.visitorId,
         timestamp: new Date().getTime() / 1000.0,
         ...event,
@@ -104,7 +102,7 @@ export default class Yawl {
         ...trackedView,
         properties: { ...view?.properties, ...trackedView?.properties },
         id: generateUUID(),
-        visit_token: this.getValidVisitId(),
+        visit_token: this.visitId.value,
         visitor_token: this.visitorId,
         timestamp: new Date().getTime() / 1000.0,
       },
@@ -114,8 +112,7 @@ export default class Yawl {
   };
 
   setVisitId = async (visitId: string): Promise<void> => {
-    this.visitId = visitId;
-    this.visitIdCreatedAt = Date.now();
+    this.visitId = new VisitId(visitId);
 
     if (this.hasInternetAccess) {
       this.trackVisit(await this.getVisitData());
@@ -131,18 +128,9 @@ export default class Yawl {
     }
 
     this.visitorId = "";
-    this.visitId = "";
-    this.visitIdCreatedAt = 0;
+    this.visitId.reset();
 
     await AsyncStorage.removeItem(VISITOR_ID_KEY);
-  };
-
-  private getValidVisitId = (): string => {
-    if (Date.now() - this.visitIdCreatedAt >= VISIT_ID_TTL) {
-      this.visitId = generateUUID();
-      this.visitIdCreatedAt = Date.now();
-    }
-    return this.visitId;
   };
 
   private async loadVisitorId(): Promise<void> {
@@ -156,7 +144,7 @@ export default class Yawl {
   private async getVisitData(): Promise<object> {
     return {
       visit: {
-        visit_token: this.visitId,
+        visit_token: this.visitId.value,
         visitor_token: this.visitorId,
         ...getDeviceInfo(),
       },
