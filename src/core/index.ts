@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { addNetworkStateListener, getNetworkStateAsync } from "expo-network";
-import queueFactory from 'react-native-queue';
+import queueFactory from "react-native-queue";
 
 import { YawlEvent, YawlView } from "../Yawl.types";
 import { Env, YawlApi, yawlApi } from "./api";
@@ -33,8 +33,10 @@ const WORKERS_OPTIONS = {
   concurrency: 1,
 };
 const VISITOR_ID_KEY = "yawl_visitorId";
+const VISIT_ID_TTL = 30 * 60 * 1000;
 export default class Yawl {
   private visitId: string;
+  private visitIdCreatedAt: number;
   private visitorId: string;
   private offlineMode: boolean = false;
   private hasInternetAccess: boolean | undefined = true;
@@ -46,6 +48,7 @@ export default class Yawl {
   constructor({ apiKey, env = "prod" }: { apiKey: string; env?: Env }) {
     this.api = yawlApi({ apiKey, env });
     this.visitId = generateUUID();
+    this.visitIdCreatedAt = Date.now();
     this.visitorId = generateUUID();
     this.baseUrl = `react-native-${apiKey}`;
   }
@@ -62,7 +65,7 @@ export default class Yawl {
     const _event = {
       event: {
         id: generateUUID(),
-        visit_token: this.visitId,
+        visit_token: this.getValidVisitId(),
         visitor_token: this.visitorId,
         timestamp: new Date().getTime() / 1000.0,
         ...event,
@@ -89,7 +92,7 @@ export default class Yawl {
     const trackedView = this.viewTracker?.();
     if (!view?.page && !trackedView?.page) {
       console.warn(
-        "Yawl: trackView() - page is required; Either set it in the view param or yawl.setViewTracker(); Event not sent"
+        "Yawl: trackView() - page is required; Either set it in the view param or yawl.setViewTracker(); Event not sent",
       );
       return;
     }
@@ -101,7 +104,7 @@ export default class Yawl {
         ...trackedView,
         properties: { ...view?.properties, ...trackedView?.properties },
         id: generateUUID(),
-        visit_token: this.visitId,
+        visit_token: this.getValidVisitId(),
         visitor_token: this.visitorId,
         timestamp: new Date().getTime() / 1000.0,
       },
@@ -112,6 +115,7 @@ export default class Yawl {
 
   setVisitId = async (visitId: string): Promise<void> => {
     this.visitId = visitId;
+    this.visitIdCreatedAt = Date.now();
 
     if (this.hasInternetAccess) {
       this.trackVisit(await this.getVisitData());
@@ -128,8 +132,17 @@ export default class Yawl {
 
     this.visitorId = "";
     this.visitId = "";
+    this.visitIdCreatedAt = 0;
 
     await AsyncStorage.removeItem(VISITOR_ID_KEY);
+  };
+
+  private getValidVisitId = (): string => {
+    if (Date.now() - this.visitIdCreatedAt >= VISIT_ID_TTL) {
+      this.visitId = generateUUID();
+      this.visitIdCreatedAt = Date.now();
+    }
+    return this.visitId;
   };
 
   private async loadVisitorId(): Promise<void> {
@@ -154,7 +167,7 @@ export default class Yawl {
     const state = await getNetworkStateAsync();
     this.hasInternetAccess = state.isConnected;
     addNetworkStateListener(
-      (state) => (this.hasInternetAccess = state.isConnected)
+      (state) => (this.hasInternetAccess = state.isConnected),
     );
   };
 
@@ -189,7 +202,6 @@ export default class Yawl {
     return properties;
   };
 
-
   private addTrackingWorker = () => {
     this.queue.addWorker(
       JOB_TRACKING,
@@ -216,7 +228,7 @@ export default class Yawl {
           // await this.onTrackingInvoke("failed", event, error);
         },
         ...WORKERS_OPTIONS,
-      }
+      },
     );
   };
 
@@ -247,7 +259,7 @@ export default class Yawl {
           // await this.onTrackingInvoke("failed", event, error);
         },
         ...WORKERS_OPTIONS,
-      }
+      },
     );
   };
 }
